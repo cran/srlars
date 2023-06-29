@@ -1,0 +1,17 @@
+819194cdac05105d9a61dca09008e794 *DESCRIPTION
+2275d131ba3cc35f6fe20d66f15909ab *NAMESPACE
+479abeabc2248cd459237c162af5ceb8 *NEWS.md
+fd518c6ea7de7fa2900484790719f1be *R/Coefficients.R
+e52c618c3b3d3717df142537746e9558 *R/DataCheck.R
+4ace4fdcded95a18a1816984a0debafc *R/Predictions.R
+797afa42a9a2e6c37d486b480dbc9610 *R/add_optimal_predictor.R
+cfa49f109b48aa68118130bbd6cc371a *R/find_optimal.R
+be11a5b9885ef326ad42605f839332cd *R/initialize_ensembles.R
+ff0fcd990c4431280a2100bafd03098f *R/remove_optimal_predictor.R
+29a6628a55d9fb11fe94428326b1a336 *R/srlars.R
+efc0ca877061c1ea59025a18d202fe20 *README.md
+e2dbc2ce1a1ddcff4a543f46f5a29aa5 *man/coef.srlars.Rd
+6c01bdcc4ee5b7cb2037b2e77d63b42d *man/predict.srlars.Rd
+928a02336f8d0b51c57080c77066f5ec *man/srlars.Rd
+80216d7b535613cbbddf7d1cbf79ba2d *tests/testthat.R
+26aa6c5d71101c65542d824d55e16adc *tests/testthat/test_srlars.R
