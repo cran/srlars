@@ -1,6 +1,6 @@
-ef90c943af5f39af751843d067e5ed7e *DESCRIPTION
+ff7d2d781352ada98bc8990479587d26 *DESCRIPTION
 100f09dbe7969a383f9d9476d0a9264c *NAMESPACE
-b0821ec561930ac83aad549d53513f45 *NEWS.md
+fd43a8aa49f95d60988ae114bd7902c4 *NEWS.md
 e9a9fa8e3cca5372be27133b7350a95e *R/checkInputData.R
 038e69b5ad9e6b9c639479c24c642424 *R/coef.srlars.R
 1042ee63489aa22535740082e1dfada1 *R/computeCVError.R
@@ -10,7 +10,7 @@ e9a9fa8e3cca5372be27133b7350a95e *R/checkInputData.R
 44c3f951b045fd247b6207dda17b95ac *R/performSelectionLoop.R
 dc47eeae135ca0a2eb6418c692afd61b *R/predict.srlars.R
 cfef658ec0795e83c5ab2e4b8e7e395a *R/srlars.R
-10e354fa63813b55a7497cc5bdec5b91 *README.md
+f1ae476ea2cf688f024e38aa68386b8b *README.md
 a6fc80abe4bcf6378dfb3db006bf5f31 *man/checkInputData.Rd
 0c88bbd782147ee6b7f6a6517457f177 *man/coef.srlars.Rd
 47215ea989ef4a3cf1e49df67cadf4c7 *man/computeCVError.Rd
