@@ -10,7 +10,13 @@ srlars(
   n_models = 5,
   tolerance = 1e-08,
   max_predictors = NULL,
-  robust = TRUE,
+  x_preprocess = c("ddc", "none"),
+  y_preprocess = c("wrap", "robust_z", "none"),
+  cor_estimator = c("wrap", "pearson"),
+  cv_preprocess = c("global", "foldwise"),
+  cv_fit = c("ls", "huber"),
+  cv_loss = c("huber", "trimmed", "mse"),
+  cv_folds = 5,
   compute_coef = TRUE
 )
 }
@@ -25,7 +31,19 @@ srlars(
 
 \item{max_predictors}{Maximum total number of variables to select across all models. Default is n * n_models.}
 
-\item{robust}{Logical. If TRUE (default), performs DDC imputation and robust initialization.}
+\item{x_preprocess}{Character. "ddc" (default) for cellwise cleaning, or "none".}
+
+\item{y_preprocess}{Character. "wrap" (default) for univariate robustification, "robust_z", or "none".}
+
+\item{cor_estimator}{Character. "wrap" (default) for robust PSD correlation, or "pearson".}
+
+\item{cv_preprocess}{Character. "global" (default) or "foldwise" (to prevent data leakage).}
+
+\item{cv_fit}{Character. "ls" (default) or "huber" for the inner arbiter fitting method.}
+
+\item{cv_loss}{Character. "huber" (default), "trimmed", or "mse" for arbiter scoring.}
+
+\item{cv_folds}{Integer. Number of cross-validation folds. Default is 5.}
 
 \item{compute_coef}{Logical. If TRUE, fits the final robust MM-models. Default is TRUE.}
 }
@@ -70,6 +88,7 @@ sigma <- as.numeric(sqrt(t(true.beta) \%*\% sigma.mat \%*\% true.beta)/sqrt(snr)
 
 # Simulation of uncontaminated data
 x <- mvnfast::rmvn(n, mu = rep(0, p), sigma = sigma.mat)
+colnames(x) <- paste0("V", 1:p)
 y <- x \%*\% true.beta + rnorm(n, 0, sigma)
 
 # Cellwise contamination
@@ -80,8 +99,13 @@ x_train[contamination_indices] <- runif(length(contamination_indices), -10, 10)
 # FSCRE Ensemble model
 ensemble_fit <- srlars(x_train, y,
                        n_models = 5,
-                       tolerance = 1e-8,
-                       robust = TRUE,
+                       tolerance = 1e-4,
+                       x_preprocess = "ddc",
+                       y_preprocess = "wrap",
+                       cor_estimator = "wrap",
+                       cv_preprocess = "global",
+                       cv_fit = "ls",
+                       cv_loss = "huber",
                        compute_coef = TRUE)
 
 # Check selected variables
