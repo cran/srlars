@@ -1,6 +1,6 @@
-49481a0d0a05df665d413c229a8fdc88 *DESCRIPTION
+3ab162a646efc05ba6c2cc3e3267a494 *DESCRIPTION
 33d512ef669fa56c722c7452929527e2 *NAMESPACE
-7921a815c27bae6c4abcf1ad1f2475db *NEWS.md
+3a86d978f73b07a55693cc7e6d96d426 *NEWS.md
 cc71416b58813bca8348e4e704ac25c2 *R/checkInputData.R
 2247f23965b842850b14da98572298cd *R/coef.srlars.R
 adfadf0c2107e7d2a32fef195d35a864 *R/computeCVError.R
@@ -9,7 +9,7 @@ adfadf0c2107e7d2a32fef195d35a864 *R/computeCVError.R
 0594276d0048c915bc37be0f53291b25 *R/getLarsProposal.R
 d7a07139cc0f867faedffb74900bfb09 *R/performSelectionLoop.R
 3e717f493026d0ec023df310c4b0b0cc *R/predict.srlars.R
-27fc783df6628c209cb27a74e8c1cea9 *R/srlars.R
+2ddd04f68d0842ddc53d660b0813a4a6 *R/srlars.R
 171a9c6325e98198dabb7a7a508e4174 *README.md
 888761c1112a31b214e5b7a90e1a6d58 *man/checkInputData.Rd
 cf1c0ec3292ee58fffcec350eabc4e87 *man/coef.srlars.Rd
@@ -19,6 +19,6 @@ e4a3d3aca5d0be88fc47086d9c97f2f9 *man/computeRobustFoundation.Rd
 2526176762c93f73287c8eceff38ff56 *man/getLarsProposal.Rd
 df08913a808e02d94206a25db389b4b2 *man/performSelectionLoop.Rd
 7e61601eabcb2fe5f966e852ba61f33c *man/predict.srlars.Rd
-1d4d3c18346256e5c1d2e318f0f16d58 *man/srlars.Rd
+7bc52a14ce9646133c3f83d59563f9f7 *man/srlars.Rd
 80216d7b535613cbbddf7d1cbf79ba2d *tests/testthat.R
 6427b3db549f2e8abae96ba46c57db53 *tests/testthat/test-srlars.R
