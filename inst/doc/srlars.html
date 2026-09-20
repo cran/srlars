@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting Started with srlars</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting Started with srlars</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><code>srlars</code> fits the Fast and Scalable Cellwise-Robust
+Ensemble (FSCRE) algorithm: a competitive ensemble of
+<code>n_models</code> sparse sub-models, built on a cellwise-robust
+foundation (Detect Deviating Cells imputation and wrapping-based robust
+correlations). “Cellwise” robustness matters because contamination in
+practice often corrupts individual <em>cells</em> of a data matrix
+rather than whole observations – a handful of bad measurements scattered
+across otherwise-good rows – which classical observation-level robust
+methods are not designed to handle.</p>
+<p>This vignette builds one small simulated example and reuses it
+throughout: we simulate a contaminated dataset, fit
+<code>srlars()</code> with its default settings, and then see what
+changes when we adjust its two ensemble-shape controls – how much
+sub-models are allowed to share variables (<code>max_share</code>) and
+how small a sub-model is allowed to end up (<code>n_min</code>). It
+closes with a short, code-free note on <code>cv.srlars()</code>, which
+chooses <code>max_share</code> automatically instead of by hand as we do
+below.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(srlars)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(mvnfast)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(cellWise)</span></code></pre></div>
+</div>
+<div id="building-a-test-case-contaminated-high-dimensional-data" class="section level2">
+<h2>Building a test case: contaminated, high-dimensional data</h2>
+<p>The scenario we simulate: 500 candidate predictors, only a fraction
+of which are truly related to the response, and a training sample
+smaller than the number of predictors – a setting where the number of
+<em>unknowns</em> outnumbers the number of <em>observations</em>. The
+truly active predictors sit in a few correlated blocks (so that some
+predictors are legitimately more informative than others), and the true
+predictor-response relationship is otherwise sparse. We then contaminate
+a fraction of the <em>cells</em> of the training predictors, leaving the
+test set clean.</p>
+<p>We start with the pieces that describe the true relationship: a
+block-correlation structure among the active predictors, and a sparse
+coefficient vector that is nonzero only for those active predictors.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">100</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span>              <span class="co"># training observations</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">2000</span>            <span class="co"># test observations</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">500</span>             <span class="co"># candidate predictors</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>p.active <span class="ot">&lt;-</span> <span class="dv">75</span>       <span class="co"># truly active predictors, in blocks below</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>group.size <span class="ot">&lt;-</span> <span class="dv">15</span>     <span class="co"># active predictors per correlated block</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>n_models <span class="ot">&lt;-</span> <span class="dv">10</span>       <span class="co"># ensemble size (K)</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co"># Active predictors sit in correlated blocks; everything else is independent noise.</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>sigma.mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, p, p)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>sigma.mat[<span class="dv">1</span><span class="sc">:</span>p.active, <span class="dv">1</span><span class="sc">:</span>p.active] <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># weak correlation across blocks</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="cf">for</span> (g <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span>(p.active <span class="sc">/</span> group.size <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  idx <span class="ot">&lt;-</span> (g <span class="sc">*</span> group.size <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(g <span class="sc">*</span> group.size <span class="sc">+</span> group.size)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  sigma.mat[idx, idx] <span class="ot">&lt;-</span> <span class="fl">0.7</span> <span class="co"># stronger correlation within a block</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>}</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="fu">diag</span>(sigma.mat) <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co"># A sparse, moderate-signal true coefficient vector</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>true.beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">runif</span>(p.active, <span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">*</span> (<span class="sc">-</span><span class="dv">1</span>) <span class="sc">^</span> <span class="fu">rbinom</span>(p.active, <span class="dv">1</span>, <span class="fl">0.7</span>),</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>              <span class="fu">rep</span>(<span class="dv">0</span>, p <span class="sc">-</span> p.active))</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sqrt</span>(<span class="fu">t</span>(true.beta) <span class="sc">%*%</span> sigma.mat <span class="sc">%*%</span> true.beta)) <span class="co"># signal-to-noise = 1</span></span></code></pre></div>
+<p>With the true relationship fixed, generating the actual training and
+test sets is just sampling predictors and adding noise to the response –
+the test set stays clean throughout, as a genuine holdout should:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>x_train <span class="ot">&lt;-</span> mvnfast<span class="sc">::</span><span class="fu">rmvn</span>(n, <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, p), <span class="at">sigma =</span> sigma.mat)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(x_train <span class="sc">%*%</span> true.beta <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, sigma))</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">colnames</span>(x_train) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;V&quot;</span>, <span class="dv">1</span><span class="sc">:</span>p)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>x_test <span class="ot">&lt;-</span> mvnfast<span class="sc">::</span><span class="fu">rmvn</span>(m, <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, p), <span class="at">sigma =</span> sigma.mat)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>y_test <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(x_test <span class="sc">%*%</span> true.beta <span class="sc">+</span> <span class="fu">rnorm</span>(m, <span class="dv">0</span>, sigma))</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="fu">colnames</span>(x_test) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(x_train)</span></code></pre></div>
+<p>Finally, we contaminate 15% of the <em>cells</em> of the training
+predictors only. Rather than replacing values with arbitrary noise, each
+contaminated row’s affected cells are set to a <em>correlation
+outlier</em>: a combination of values that looks unremarkable one
+variable at a time, but distorts the multivariate dependence structure
+DDC and wrapping are specifically designed to catch. The exact linear
+algebra behind that (<code>contam_correlation()</code> below) isn’t
+essential reading – what matters is that it plants exactly this kind of
+cellwise, dependence-breaking contamination into
+<code>x_train</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>contam_correlation <span class="ot">&lt;-</span> <span class="cf">function</span>(X, prop, sigma_mat, <span class="at">gamma =</span> <span class="dv">3</span>) {</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X); p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(n <span class="sc">*</span> p, <span class="at">size =</span> <span class="fu">round</span>(n <span class="sc">*</span> p <span class="sc">*</span> prop))</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> ((idx <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">%%</span> n) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  cols <span class="ot">&lt;-</span> ((idx <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">%/%</span> n) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    J <span class="ot">&lt;-</span> cols[rows <span class="sc">==</span> i]</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(J) <span class="sc">==</span> <span class="dv">0</span>) <span class="cf">next</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(J) <span class="sc">==</span> <span class="dv">1</span>) { X[i, J] <span class="ot">&lt;-</span> gamma <span class="sc">*</span> <span class="dv">3</span>; <span class="cf">next</span> }</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    SigmaJ <span class="ot">&lt;-</span> sigma_mat[J, J, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    vmin <span class="ot">&lt;-</span> <span class="fu">eigen</span>(SigmaJ, <span class="at">symmetric =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>vectors[, <span class="fu">length</span>(J)]</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    denom <span class="ot">&lt;-</span> <span class="fu">mahalanobis</span>(<span class="fu">t</span>(vmin), <span class="at">center =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">length</span>(J)), <span class="at">cov =</span> SigmaJ)</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    X[i, J] <span class="ot">&lt;-</span> gamma <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(J)) <span class="sc">*</span> (vmin <span class="sc">/</span> <span class="fu">sqrt</span>(denom))</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  }</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>  X</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>}</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>x_train <span class="ot">&lt;-</span> <span class="fu">contam_correlation</span>(x_train, <span class="at">prop =</span> <span class="fl">0.15</span>, <span class="at">sigma_mat =</span> sigma.mat)</span></code></pre></div>
+<p>Lastly, one small helper we’ll reuse for every fit below: precision
+and recall of the selected variables against the <em>known</em> active
+set, and out-of-sample MSPE (scaled by the noise variance, so that
+<code>1</code> is roughly what a correctly-specified model would
+achieve):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>get_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(fit) {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  coefs <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">coef</span>(fit))[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  sel <span class="ot">&lt;-</span> <span class="fu">which</span>(coefs <span class="sc">!=</span> <span class="dv">0</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  truth <span class="ot">&lt;-</span> <span class="fu">which</span>(true.beta <span class="sc">!=</span> <span class="dv">0</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  preds <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">predict</span>(fit, x_test))</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">Precision =</span> <span class="fu">length</span>(<span class="fu">intersect</span>(sel, truth)) <span class="sc">/</span> <span class="fu">max</span>(<span class="fu">length</span>(sel), <span class="dv">1</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>   <span class="at">Recall =</span> <span class="fu">length</span>(<span class="fu">intersect</span>(sel, truth)) <span class="sc">/</span> <span class="fu">length</span>(truth),</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>   <span class="at">MSPE =</span> <span class="fu">mean</span>((y_test <span class="sc">-</span> preds)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> sigma<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>   <span class="st">`</span><span class="at">Mean sub-model size</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(<span class="fu">vapply</span>(fit<span class="sc">$</span>active.sets, length, <span class="fu">integer</span>(<span class="dv">1</span>))))</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="fitting-srlars" class="section level2">
+<h2>Fitting srlars()</h2>
+<p>With the data in hand, fitting the default ensemble is a single call.
+By default, <code>max_share = 1</code>: the <code>n_models</code>
+sub-models are fully disjoint, so no variable can be selected by more
+than one of them.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>fit_default <span class="ot">&lt;-</span> <span class="fu">srlars</span>(x_train, y_train,</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>                      <span class="at">n_models =</span> n_models,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>                      <span class="at">tolerance =</span> <span class="fl">1e-4</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>                      <span class="at">x_preprocess =</span> <span class="st">&quot;ddc&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>                      <span class="at">y_preprocess =</span> <span class="st">&quot;wrap&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>                      <span class="at">cor_estimator =</span> <span class="st">&quot;wrap&quot;</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>                      <span class="at">cv_preprocess =</span> <span class="st">&quot;global&quot;</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>                      <span class="at">cv_fit =</span> <span class="st">&quot;huber&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>                      <span class="at">cv_loss =</span> <span class="st">&quot;huber&quot;</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>                      <span class="at">cv_folds =</span> <span class="dv">5</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>                      <span class="at">compute_coef =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Each sub-model gets its own, disjoint set of variables:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="st">`</span><span class="at">Sub-model</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">seq_len</span>(n_models),</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>            <span class="st">`</span><span class="at">Variables selected</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">vapply</span>(fit_default<span class="sc">$</span>active.sets, length, <span class="fu">integer</span>(<span class="dv">1</span>))),</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">align =</span> <span class="st">&quot;c&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Sub.model</th>
+<th align="center">Variables.selected</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">5</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">10</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">5</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">8</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">6</td>
+<td align="center">8</td>
+</tr>
+<tr class="odd">
+<td align="center">7</td>
+<td align="center">5</td>
+</tr>
+<tr class="even">
+<td align="center">8</td>
+<td align="center">11</td>
+</tr>
+<tr class="odd">
+<td align="center">9</td>
+<td align="center">4</td>
+</tr>
+<tr class="even">
+<td align="center">10</td>
+<td align="center">9</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>metrics_default <span class="ot">&lt;-</span> <span class="fu">get_metrics</span>(fit_default)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">t</span>(<span class="fu">round</span>(metrics_default, <span class="dv">3</span>)), <span class="at">caption =</span> <span class="st">&quot;srlars() at the default max_share = 1&quot;</span>)</span></code></pre></div>
+<table>
+<caption>srlars() at the default max_share = 1</caption>
+<thead>
+<tr class="header">
+<th align="right">Precision</th>
+<th align="right">Recall</th>
+<th align="right">MSPE</th>
+<th align="right">Mean sub-model size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.676</td>
+<td align="right">0.64</td>
+<td align="right">1.257</td>
+<td align="right">7.1</td>
+</tr>
+</tbody>
+</table>
+<p>Out of 75 truly active predictors, this run recovers a recall of 0.64
+at a precision of 0.68 – exactly how well any particular run does will
+vary with the random contamination draw, but the shape of the result
+(some but not all of the true signal recovered, most of what’s selected
+genuinely active) is typical of this kind of high-dimensional, heavily
+contaminated setting.</p>
+<p><code>coef()</code> and <code>predict()</code> both average across
+the ensemble’s sub-models, so they work exactly like the corresponding
+methods for an ordinary fitted regression:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">t</span>(<span class="fu">round</span>(<span class="fu">coef</span>(fit_default)[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>], <span class="dv">3</span>)),</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>            <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Intercept&quot;</span>, <span class="fu">paste0</span>(<span class="st">&quot;V&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Intercept</th>
+<th align="right">V1</th>
+<th align="right">V2</th>
+<th align="right">V3</th>
+<th align="right">V4</th>
+<th align="right">V5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">7.365</td>
+<td align="right">0</td>
+<td align="right">-1.46</td>
+<td align="right">-1.282</td>
+<td align="right">-1.515</td>
+<td align="right">-1.186</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">t</span>(<span class="fu">round</span>(<span class="fu">predict</span>(fit_default, x_test[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]), <span class="dv">2</span>)),</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>            <span class="at">col.names =</span> <span class="fu">paste</span>(<span class="st">&quot;Test row&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Test row 1</th>
+<th align="right">Test row 2</th>
+<th align="right">Test row 3</th>
+<th align="right">Test row 4</th>
+<th align="right">Test row 5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">-12.92</td>
+<td align="right">24.33</td>
+<td align="right">2.74</td>
+<td align="right">26.18</td>
+<td align="right">98.87</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="controlling-how-much-sub-models-can-share-max_share" class="section level2">
+<h2>Controlling how much sub-models can share:
+<code>max_share</code></h2>
+<p><code>max_share</code> (from <code>1</code> to <code>n_models</code>)
+relaxes the disjointness above: a variable may now be selected by up to
+<code>max_share</code> sub-models instead of just one. At the other
+extreme, <code>max_share = n_models</code> removes the restriction
+entirely – sub-models are then completely free to converge on the same
+variables. Refitting on the exact same data, changing only
+<code>max_share</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>fit_shared <span class="ot">&lt;-</span> <span class="fu">srlars</span>(x_train, y_train,</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>                     <span class="at">n_models =</span> n_models,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>                     <span class="at">max_share =</span> n_models,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>                     <span class="at">tolerance =</span> <span class="fl">1e-4</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>                     <span class="at">x_preprocess =</span> <span class="st">&quot;ddc&quot;</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>                     <span class="at">y_preprocess =</span> <span class="st">&quot;wrap&quot;</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>                     <span class="at">cor_estimator =</span> <span class="st">&quot;wrap&quot;</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>                     <span class="at">cv_preprocess =</span> <span class="st">&quot;global&quot;</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>                     <span class="at">cv_fit =</span> <span class="st">&quot;huber&quot;</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>                     <span class="at">cv_loss =</span> <span class="st">&quot;huber&quot;</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>                     <span class="at">cv_folds =</span> <span class="dv">5</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>                     <span class="at">compute_coef =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>metrics_shared <span class="ot">&lt;-</span> <span class="fu">get_metrics</span>(fit_shared)</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>  <span class="fu">rbind</span>(<span class="st">`</span><span class="at">max_share = 1 (default)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(metrics_default, <span class="dv">3</span>),</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>       <span class="st">`</span><span class="at">max_share = n_models</span><span class="st">`</span>    <span class="ot">=</span> <span class="fu">round</span>(metrics_shared, <span class="dv">3</span>))</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>)</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="35%" />
+<col width="14%" />
+<col width="10%" />
+<col width="8%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Precision</th>
+<th align="right">Recall</th>
+<th align="right">MSPE</th>
+<th align="right">Mean sub-model size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">max_share = 1 (default)</td>
+<td align="right">0.676</td>
+<td align="right">0.640</td>
+<td align="right">1.257</td>
+<td align="right">7.1</td>
+</tr>
+<tr class="even">
+<td align="left">max_share = n_models</td>
+<td align="right">0.846</td>
+<td align="right">0.147</td>
+<td align="right">1.622</td>
+<td align="right">13.0</td>
+</tr>
+</tbody>
+</table>
+<p>Here, allowing unrestricted sharing moves recall from 0.64 to 0.15:
+with fewer independent sub-models exploring <em>different</em>
+variables, the ensemble as a whole tends to cover less of a broad,
+many-active-variable truth like this one. That trade is not universal,
+though – letting sub-models refit the same, well-supported variables can
+help on datasets that don’t need broad exploration in the first place.
+<code>cv.srlars()</code> (see the closing section) picks
+<code>max_share</code> for you by cross-validation, rather than
+requiring this kind of manual comparison.</p>
+</div>
+<div id="guaranteeing-a-minimum-sub-model-size-n_min" class="section level2">
+<h2>Guaranteeing a minimum sub-model size: <code>n_min</code></h2>
+<p>The selection loop’s stopping rule is evaluated once per round,
+across the <em>entire</em> ensemble at once: it halts as soon as no
+sub-model’s next candidate variable shows a sufficient cross-validated
+improvement. On some datasets that can leave sub-models quite small.
+<code>n_min</code> sets a floor under that: sub-models below it keep
+receiving their best available variable even when it doesn’t clear the
+usual improvement bar (though it can never violate the
+<code>max_share</code> restrictions above – only the improvement
+requirement is relaxed).</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>fit_floor <span class="ot">&lt;-</span> <span class="fu">srlars</span>(x_train, y_train,</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>                    <span class="at">n_models =</span> n_models,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>                    <span class="at">n_min =</span> <span class="dv">10</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>                    <span class="at">tolerance =</span> <span class="fl">1e-4</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>                    <span class="at">x_preprocess =</span> <span class="st">&quot;ddc&quot;</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>                    <span class="at">y_preprocess =</span> <span class="st">&quot;wrap&quot;</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>                    <span class="at">cor_estimator =</span> <span class="st">&quot;wrap&quot;</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>                    <span class="at">cv_preprocess =</span> <span class="st">&quot;global&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>                    <span class="at">cv_fit =</span> <span class="st">&quot;huber&quot;</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>                    <span class="at">cv_loss =</span> <span class="st">&quot;huber&quot;</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>                    <span class="at">cv_folds =</span> <span class="dv">5</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>                    <span class="at">compute_coef =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>metrics_floor <span class="ot">&lt;-</span> <span class="fu">get_metrics</span>(fit_floor)</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>  <span class="fu">rbind</span>(<span class="st">`</span><span class="at">n_min = NULL (default)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(metrics_default, <span class="dv">3</span>),</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>       <span class="st">`</span><span class="at">n_min = 10</span><span class="st">`</span>               <span class="ot">=</span> <span class="fu">round</span>(metrics_floor, <span class="dv">3</span>))</span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Precision</th>
+<th align="right">Recall</th>
+<th align="right">MSPE</th>
+<th align="right">Mean sub-model size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">n_min = NULL (default)</td>
+<td align="right">0.676</td>
+<td align="right">0.64</td>
+<td align="right">1.257</td>
+<td align="right">7.1</td>
+</tr>
+<tr class="even">
+<td align="left">n_min = 10</td>
+<td align="right">0.528</td>
+<td align="right">0.76</td>
+<td align="right">1.250</td>
+<td align="right">10.8</td>
+</tr>
+</tbody>
+</table>
+<p>Forcing a floor of 10 variables per sub-model raises the mean
+sub-model size from 7.1 to 10.8, which typically trades some precision
+(a few of the forced-in variables are not genuinely active) for higher
+recall – useful when the default stopping rule is cutting sub-models off
+before they’ve captured much real signal, but not something to reach for
+by default.</p>
+</div>
+<div id="choosing-max_share-automatically-cv.srlars" class="section level2">
+<h2>Choosing <code>max_share</code> automatically:
+<code>cv.srlars()</code></h2>
+<p>Rather than comparing <code>max_share</code> values by hand as above,
+<code>cv.srlars()</code> chooses it by an outer cross-validation loop
+scored on held-out <em>ensemble</em> prediction error, and returns the
+refit at the cross-validated optimum. The expensive cellwise-robust
+preprocessing stage is computed once per outer fold and reused across
+every candidate value, so this is efficient relative to a naive grid
+search. The object it returns is classed so that <code>coef()</code> and
+<code>predict()</code> work on it exactly as they do above – no new
+methods to learn. See <code>?cv.srlars</code> for details.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

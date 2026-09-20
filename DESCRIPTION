@@ -1,8 +1,8 @@
 Package: srlars
 Type: Package
 Title: Fast and Scalable Cellwise-Robust Ensemble
-Version: 3.0.1
-Date: 2026-07-01
+Version: 3.1.0
+Date: 2026-09-19
 Authors@R: c(person("Anthony", "Christidis", role=c("aut", "cre"), email = "anthony.christidis@stat.ubc.ca"),
              person("Gabriela", "Cohen-Freue", role=c("aut"), email = "gcohen@stat.ubc.ca"))
 Maintainer: Anthony Christidis <anthony.christidis@stat.ubc.ca>
@@ -16,11 +16,12 @@ License: GPL (>= 2)
 Encoding: UTF-8
 Biarch: true
 Imports: cellWise, robustbase, mvnfast
-Suggests: testthat
+Suggests: testthat, knitr, rmarkdown
+VignetteBuilder: knitr
 RoxygenNote: 7.3.3
 NeedsCompilation: no
-Packaged: 2026-06-13 17:08:38 UTC; anthony
+Packaged: 2026-09-19 17:44:29 UTC; anthony
 Author: Anthony Christidis [aut, cre],
   Gabriela Cohen-Freue [aut]
 Repository: CRAN
-Date/Publication: 2026-07-02 02:30:02 UTC
+Date/Publication: 2026-09-20 02:30:09 UTC

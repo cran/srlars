@@ -38,6 +38,15 @@
 #' @param cv_loss Character. CV scoring loss used by \code{computeCVError}
 #'   (e.g., \code{"mse"}, \code{"trimmed"}, or \code{"huber"}).
 #' @param cv_folds Integer. Number of CV folds.
+#' @param max_share Integer. Maximum number of sub-models (1 to n_models) in which a given
+#'   variable may appear. Default is 1 (fully disjoint sub-models). For \code{1 < max_share <
+#'   n_models}, each sub-model's first selected variable is forced distinct across sub-models;
+#'   sharing is only permitted afterward. This restriction is lifted when \code{max_share =
+#'   n_models}.
+#' @param n_min Integer or NULL. Minimum number of variables each sub-model is guaranteed
+#'   (subject to availability under the \code{max_share}/diversity pool restrictions), even if no
+#'   candidate clears the usual positive-benefit or \code{tolerance} requirement. Default is NULL
+#'   (no floor enforced, original behavior).
 #'
 #' @return A list with component:
 #' \describe{
@@ -62,7 +71,9 @@ performSelectionLoop <- function(Rx, ry,
                                  cv_preprocess,
                                  cv_fit,
                                  cv_loss,
-                                 cv_folds) {
+                                 cv_folds,
+                                 max_share = 1,
+                                 n_min = NULL) {
 
     n <- nrow(x)
     p <- ncol(x)
@@ -113,13 +124,14 @@ performSelectionLoop <- function(Rx, ry,
             y_val_raw   <- as.numeric(y[val_idx])
 
             if (y_preprocess == "wrap") {
-                w_train <- cellWise::wrap(as.matrix(y_train_raw))
+                w_train <- cellWise::wrap(as.matrix(y_train_raw), checkPars = list(silent = TRUE))
                 y_train_f <- as.numeric(w_train$Xw)
 
                 # Apply same loc/scale to val fold to keep scales consistent
                 w_val <- cellWise::wrap(as.matrix(y_val_raw),
                                         locX = w_train$loc,
-                                        scaleX = w_train$scale)
+                                        scaleX = w_train$scale,
+                                        checkPars = list(silent = TRUE))
                 y_val_f <- as.numeric(w_val$Xw)
 
             } else if (y_preprocess == "robust_z") {
@@ -169,7 +181,8 @@ performSelectionLoop <- function(Rx, ry,
         current.correlations[[k]] <- ry
     }
 
-    available.vars <- 1:p
+    var.usage <- integer(p)
+    seed.vars <- integer(0)
 
     current.cv.errors <- numeric(n_models)
     empty_error <- computeCVError(cv_data, integer(0), cv_fit, cv_loss)
@@ -182,18 +195,78 @@ performSelectionLoop <- function(Rx, ry,
     # 2. Main Proposer-Arbiter Loop
     # ______________________________
 
-    while (continue.selection && n.selected < max_predictors && length(available.vars) > 0) {
+    while (continue.selection && n.selected < max_predictors && any(var.usage < max_share)) {
 
         # A. Propose Candidates
         candidates <- vector("list", n_models)
         for (k in 1:n_models) {
+            pool.k <- which(var.usage < max_share)
+            if (length(active.sets[[k]]) > 0) {
+                pool.k <- setdiff(pool.k, active.sets[[k]])
+            } else if (max_share < n_models) {
+                # Force distinct seeds across sub-models when any sharing is allowed but not
+                # unrestricted: a variable already used as another model's first pick cannot
+                # be proposed as a fresh model's seed too, preventing several models from
+                # redundantly duplicating the same "obviously best" cold-start variable.
+                pool.k <- setdiff(pool.k, seed.vars)
+            }
+
             candidates[[k]] <- getLarsProposal(
                 Rx,
                 active.sets[[k]],
                 sign.vectors[[k]],
                 current.correlations[[k]],
-                available.vars
+                pool.k
             )
+        }
+
+        # A2. Floor Enforcement (n_min)
+        # Force-accept a candidate for a sub-model still below the floor, bypassing the
+        # positive-benefit/tolerance requirement below -- but never bypassing the pool
+        # restrictions already applied above (max_share usage cap and seed diversity).
+        if (!is.null(n_min)) {
+            below.floor <- which(vapply(active.sets, length, integer(1)) < n_min)
+            below.floor <- below.floor[!vapply(candidates[below.floor],
+                                               function(cand) is.null(cand$next_var),
+                                               logical(1))]
+
+            if (length(below.floor) > 0) {
+                forced.benefits <- rep(-Inf, length(below.floor))
+                for (i in seq_along(below.floor)) {
+                    k <- below.floor[i]
+                    cand <- candidates[[k]]
+                    new.error <- computeCVError(cv_data,
+                                                c(active.sets[[k]], cand$next_var),
+                                                cv_fit, cv_loss)
+                    forced.benefits[i] <- current.cv.errors[k] - new.error
+                }
+
+                if (any(is.finite(forced.benefits))) {
+                    best.forced <- max(forced.benefits[is.finite(forced.benefits)])
+                    best.local <- which(forced.benefits == best.forced)
+                    winner.local <- if (length(best.local) > 1) sample(best.local, 1) else best.local
+                    winner.k <- below.floor[winner.local]
+
+                    winner.cand <- candidates[[winner.k]]
+                    winner.var <- winner.cand$next_var
+                    winner.base.error <- current.cv.errors[winner.k]
+                    winner.benefit <- forced.benefits[winner.local]
+
+                    if (length(active.sets[[winner.k]]) == 0) {
+                        seed.vars <- c(seed.vars, winner.var)
+                    }
+                    active.sets[[winner.k]] <- c(active.sets[[winner.k]], winner.var)
+                    sign.vectors[[winner.k]] <- c(sign.vectors[[winner.k]], winner.cand$next_sign)
+
+                    current.cv.errors[winner.k] <- winner.base.error - winner.benefit
+                    current.correlations[[winner.k]] <- current.correlations[[winner.k]] -
+                        (winner.cand$gamma * winner.cand$a_vec)
+
+                    var.usage[winner.var] <- var.usage[winner.var] + 1L
+                    n.selected <- n.selected + 1
+                    next
+                }
+            }
         }
 
         # B. Evaluate Benefits
@@ -232,6 +305,9 @@ performSelectionLoop <- function(Rx, ry,
         ratio <- max.ben / winner.base.error
 
         if (ratio > tolerance) {
+            if (length(active.sets[[winner.k]]) == 0) {
+                seed.vars <- c(seed.vars, winner.var)
+            }
             active.sets[[winner.k]] <- c(active.sets[[winner.k]], winner.var)
             sign.vectors[[winner.k]] <- c(sign.vectors[[winner.k]], winner.cand$next_sign)
 
@@ -239,7 +315,7 @@ performSelectionLoop <- function(Rx, ry,
             current.correlations[[winner.k]] <- current.correlations[[winner.k]] -
                 (winner.cand$gamma * winner.cand$a_vec)
 
-            available.vars <- setdiff(available.vars, winner.var)
+            var.usage[winner.var] <- var.usage[winner.var] + 1L
             n.selected <- n.selected + 1
         } else {
             continue.selection <- FALSE

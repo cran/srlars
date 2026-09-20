@@ -17,6 +17,8 @@
 #' @param cv_fit Arbiter fit function.
 #' @param cv_folds Number of CV folds.
 #' @param compute_coef Logical.
+#' @param max_share Maximum number of sub-models a variable may appear in. NULL skips this check.
+#' @param n_min Minimum number of variables each sub-model is guaranteed. NULL skips this check.
 #'
 #' @return NULL. Stops execution with an error message if invalid inputs are detected.
 #'
@@ -33,7 +35,9 @@ checkInputData <- function(x, y,
                            cv_loss,
                            cv_fit,
                            cv_folds,
-                           compute_coef) {
+                           compute_coef,
+                           max_share = NULL,
+                           n_min = NULL) {
 
     # 1. Checking x and y
     if (all(!inherits(x, "matrix"), !inherits(x, "data.frame"))) {
@@ -75,6 +79,30 @@ checkInputData <- function(x, y,
             stop("n_models should be numeric")
         } else if (any(!n_models == floor(n_models), n_models <= 0)) {
             stop("n_models should be a positive integer greater than 0")
+        }
+    }
+
+    # 2b. Checking max_share
+    if (!is.null(max_share)) {
+        if (!is.numeric(max_share)) {
+            stop("max_share should be numeric")
+        } else if (any(!max_share == floor(max_share), max_share < 1)) {
+            stop("max_share should be a positive integer >= 1")
+        }
+        if (!is.null(n_models) && max_share > n_models) {
+            stop("max_share cannot exceed n_models")
+        }
+    }
+
+    # 2c. Checking n_min
+    if (!is.null(n_min)) {
+        if (!is.numeric(n_min)) {
+            stop("n_min should be numeric")
+        } else if (any(!n_min == floor(n_min), n_min < 1)) {
+            stop("n_min should be a positive integer >= 1")
+        }
+        if (n_min > min(nrow(x) - 1, ncol(x))) {
+            stop("n_min cannot exceed min(n - 1, p)")
         }
     }
 
